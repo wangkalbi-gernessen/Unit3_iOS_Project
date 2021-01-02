@@ -183,7 +183,7 @@ class QuestionViewController: UIViewController {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-    }
+    } 
     
     
     
@@ -250,7 +250,7 @@ class QuestionViewController: UIViewController {
         if questionIndex < questions.count {
             updateUI()
         } else {
-            let navigationController = UINavigationController(rootViewController: ResultViewController())
+            let navigationController = UINavigationController(rootViewController: ResultViewController(coder: <#NSCoder#>) ?? <#default value#>)
             present(navigationController, animated: true, completion: nil)
         }
     }
