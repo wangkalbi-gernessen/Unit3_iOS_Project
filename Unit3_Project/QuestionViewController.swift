@@ -185,8 +185,15 @@ class QuestionViewController: UIViewController {
         mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     } 
     
-    
-    
+    // create a slider on ranged question view
+    func setupSlider() -> UISlider {
+        let slider = UISlider()
+        slider.maximumValue = 1
+        slider.minimumValue = 0
+        slider.tintColor = .green
+        slider.isContinuous = true
+        return slider
+    }
     
     
     
@@ -201,24 +208,22 @@ class QuestionViewController: UIViewController {
     
     
     // create a stackview for ranged question view
-    func rangedLabels() -> [UILabel] {
-        var rangedLabels:[UILabel] = [UILabel]()
-        var tagNumber = 0
-        for answer in questions[2].answers {
-            let rangedLabel = UILabel()
-            rangedLabel.text = answer.text
-            rangedLabel.translatesAutoresizingMaskIntoConstraints = false
-            rangedLabel.font = UIFont.systemFont(ofSize: 20)
-            rangedLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            rangedLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-            rangedLabels.append(rangedLabel)
-        }
-        return rangedLabels
-    }
+//    func rangedLabels() -> UILabel {
+//        var rangedLabels:[UILabel] = [UILabel]()
+//        var tagNumber = 0
+//        let rangedLabel = UILabel()
+//        rangedLabel.text = answer.text
+//        rangedLabel.translatesAutoresizingMaskIntoConstraints = false
+//        rangedLabel.font = UIFont.systemFont(ofSize: 20)
+//        rangedLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        rangedLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+//        rangedLabels.append(rangedLabel)
+//        return rangedLabels
+//    }
     
     // create a stackview for ranged question view's labels
     func rangedStackView() {
-        let rangedStack = UIStackView(arrangedSubviews: rangedLabels())
+        let rangedStack = UIStackView(arrangedSubviews: [setupSlider()])
         rangedStack.alignment = .center
         rangedStack.axis = .vertical
         rangedStack.spacing = 10
@@ -250,7 +255,7 @@ class QuestionViewController: UIViewController {
         if questionIndex < questions.count {
             updateUI()
         } else {
-            let navigationController = UINavigationController(rootViewController: ResultViewController(coder: <#NSCoder#>) ?? <#default value#>)
+            let navigationController = UINavigationController(rootViewController: ResultViewController(answerChosen))
             present(navigationController, animated: true, completion: nil)
         }
     }

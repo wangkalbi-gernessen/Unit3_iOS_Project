@@ -12,25 +12,34 @@ class ResultViewController: UIViewController {
     let resultAnswerLabel: UILabel = {
         let resultAnswer = UILabel()
         resultAnswer.backgroundColor = .white
-        resultAnswer.text = "You are\(mostCommonAnswer.rawValue)!"
-        
-        
+        resultAnswer.font = UIFont(name: "Georgia", size: 20)
+        resultAnswer.translatesAutoresizingMaskIntoConstraints = false
         return resultAnswer
     }()
     
     let resultDefinitionLabel: UILabel = {
         let resultDefinition = UILabel()
-        
-        
-        
+        resultDefinition.backgroundColor = .white
+        resultDefinition.font = UIFont(name: "Georgia", size: 20)
+        resultDefinition.translatesAutoresizingMaskIntoConstraints = false
         return resultDefinition
+    }()
+    
+    lazy var stackview: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [resultAnswerLabel, resultDefinitionLabel])
+        stack.axis = .vertical
+        stack.distribution = .fillEqually
+        stack.spacing = 10
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
     
     var responses: [Answer]
     
-    init?(coder: NSCoder, responses: [Answer]) {
+    init(_ responses: [Answer]) {
         self.responses = responses
-        super.init(coder: coder)
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -40,7 +49,8 @@ class ResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.hidesBackButton = true
-        view.backgroundColor = .brown
+        setupStackView()
+        view.backgroundColor = .white
         title = "Result"
         let doneBtn = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(returnToIntroduction(_:)))
         navigationItem.rightBarButtonItem = doneBtn
@@ -48,20 +58,28 @@ class ResultViewController: UIViewController {
         
     }
     
+    func setupStackView() {
+        view.addSubview(stackview)
+        stackview.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        stackview.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
     @objc func returnToIntroduction(_ sender: UIButton) {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     func calculatePersonalityResult() {
-        let frequencyOfAnswers = responses.reduce(into: [AnimalType: Int]()) {
-            if existingCount = counts[answer.type] {
-                counts[answer.type] = existingCount + 1
-            } else {
-                counts[answer.type] = 1
-            }
-            
+        let frequencyOfAnswers = responses.reduce(into: [:]) {
+            (counts, answer) in
+            counts[answer.type, default: 0] += 1
         }
+        let frequentAnswerSorted = frequencyOfAnswers.sorted(by: {(pair1, pair2) in
+            return pair1.value > pair2.value
+        })
         
         let mostCommonAnswer = frequencyOfAnswers.sorted{$0.1 > $1.1}.first!.key
+        
+        resultAnswerLabel.text = "You are a \(mostCommonAnswer.rawValue)!"
+        resultDefinitionLabel.text = mostCommonAnswer.definition
     }
 }
