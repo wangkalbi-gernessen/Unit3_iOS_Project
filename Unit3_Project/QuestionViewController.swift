@@ -104,6 +104,13 @@ class QuestionViewController: UIViewController {
     func setupSingleViewStack() {
         
         view.addSubview(UIView1)
+
+        UIView1.translatesAutoresizingMaskIntoConstraints = false
+        UIView1.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        UIView1.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        UIView1.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        UIView1.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
         
         let stack = UIStackView(arrangedSubviews: setupSingleButtons())
         stack.alignment = .center
@@ -111,7 +118,7 @@ class QuestionViewController: UIViewController {
         stack.spacing = 10
         stack.distribution = .fillEqually
         UIView1.addSubview(stack)
-        view.addSubview(stack)
+        view.addSubview(UIView1)
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         stack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
