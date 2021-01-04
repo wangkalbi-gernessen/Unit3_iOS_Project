@@ -38,6 +38,7 @@ class QuestionViewController: UIViewController {
     var questionIndex = 0
     var answerChosen = [Answer]()
     
+    // create empty UIView for single answer
     let UIView1: UIView = {
         let view1 = UIView()
         view1.translatesAutoresizingMaskIntoConstraints = false
@@ -45,11 +46,20 @@ class QuestionViewController: UIViewController {
         return view1
     }()
     
+    // create empty UIView for multiple answer
     let UIView2: UIView = {
         let view2 = UIView()
         view2.translatesAutoresizingMaskIntoConstraints = false
         view2.backgroundColor = .white
         return view2
+    }()
+    
+    // create empty UIView for ranged answer
+    let UIView3: UIView = {
+        let view3 = UIView()
+        view3.translatesAutoresizingMaskIntoConstraints = false
+        view3.backgroundColor = .white
+        return view3
     }()
     
     override func viewDidLoad() {
@@ -102,15 +112,11 @@ class QuestionViewController: UIViewController {
     
     // create a stackview for single question's 4 buttons
     func setupSingleViewStack() {
-        
         view.addSubview(UIView1)
-
-        UIView1.translatesAutoresizingMaskIntoConstraints = false
         UIView1.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         UIView1.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         UIView1.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         UIView1.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-
         
         let stack = UIStackView(arrangedSubviews: setupSingleButtons())
         stack.alignment = .center
@@ -118,7 +124,6 @@ class QuestionViewController: UIViewController {
         stack.spacing = 10
         stack.distribution = .fillEqually
         UIView1.addSubview(stack)
-        view.addSubview(UIView1)
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         stack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
@@ -141,7 +146,6 @@ class QuestionViewController: UIViewController {
         multiSwitches.tag = tagNumber
         multiSwitches.translatesAutoresizingMaskIntoConstraints = false
         multiSwitches.addTarget(self, action: #selector(switchOn), for: UIControl.Event.valueChanged)
-        multiSwitches.isOn = true
         return multiSwitches
     }
     
@@ -160,7 +164,6 @@ class QuestionViewController: UIViewController {
         if sender.tag == 4 && sender.isOn {
             answerChosen.append(currentAnswers[3])
         }
-        nextQuestion()
     }
     
     // create a stackview for multiple question view
@@ -178,10 +181,35 @@ class QuestionViewController: UIViewController {
         return totalStackView
     }
     
+    func setupMultipleAnswerButton() -> UIButton {
+        let multiAnswerBtn = UIButton()
+        multiAnswerBtn.setTitle("Submit Answer", for: .normal)
+        multiAnswerBtn.translatesAutoresizingMaskIntoConstraints = false
+        multiAnswerBtn.titleLabel?.font = UIFont(name: "font", size: 20)
+        multiAnswerBtn.setTitleColor(.blue, for: .normal)
+        multiAnswerBtn.layer.borderColor = UIColor.red.cgColor
+        multiAnswerBtn.layer.borderWidth = 1
+        multiAnswerBtn.layer.cornerRadius = 3
+        multiAnswerBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        multiAnswerBtn.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        multiAnswerBtn.addTarget(self, action: #selector(pressMultipleAnswerButton(_:)), for: .touchUpInside)
+        return multiAnswerBtn
+    }
+    
+    @objc func pressMultipleAnswerButton(_ sender: UIButton) {
+        nextQuestion()
+    }
+    
     // create main stackview for 4 stackviews including 4 labels and switches on multiple question view
     func setupMainStackViewOnMultipleView() {
         view.addSubview(UIView2)
+        UIView2.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        UIView2.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        UIView2.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        UIView2.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        
         let mainStackView = UIStackView(arrangedSubviews: setupMultipleStackView())
+        mainStackView.addArrangedSubview(setupMultipleAnswerButton())
         mainStackView.alignment = .center
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
@@ -192,50 +220,94 @@ class QuestionViewController: UIViewController {
         mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     } 
     
+    
+    
+    
+    
+    
     // create a slider on ranged question view
     func setupSlider() -> UISlider {
         let slider = UISlider()
         slider.maximumValue = 1
         slider.minimumValue = 0
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.widthAnchor.constraint(equalToConstant: 200).isActive = true
         slider.tintColor = .green
-        slider.isContinuous = true
+        slider.addTarget(self, action: #selector(changeSliderValue(_:)), for: UIControl.Event.valueChanged)
         return slider
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    @objc func changeSliderValue(_ sender: UISlider) {
+        let currentAnswers = questions[questionIndex].answers
+        let index = Int(round(sender.value * Float(currentAnswers.count - 1)))
+        answerChosen.append(currentAnswers[index])
+        let rangedUILabel1 = setupRangedLabels()[0]
+        let rangedUILabel2 = setupRangedLabels()[1]
+        
+        rangedUILabel1.text = currentAnswers[index].text
+        rangedUILabel2.text = currentAnswers[index].text
+    }
+
     
     // create a stackview for ranged question view
-//    func rangedLabels() -> UILabel {
-//        var rangedLabels:[UILabel] = [UILabel]()
-//        var tagNumber = 0
-//        let rangedLabel = UILabel()
-//        rangedLabel.text = answer.text
-//        rangedLabel.translatesAutoresizingMaskIntoConstraints = false
-//        rangedLabel.font = UIFont.systemFont(ofSize: 20)
-//        rangedLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
-//        rangedLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-//        rangedLabels.append(rangedLabel)
-//        return rangedLabels
-//    }
+    func setupRangedLabels() -> [UILabel] {
+        var rangedLabels:[UILabel] = [UILabel]()
+        for _ in 0..<2 {
+            let rangedLabel = UILabel()
+            rangedLabel.translatesAutoresizingMaskIntoConstraints = false
+            rangedLabel.font = UIFont.systemFont(ofSize: 20)
+            rangedLabel.text = "gogo"
+            rangedLabels.append(rangedLabel)
+        }
+        return rangedLabels
+    }
+    
+    // create a stackview for two labels on ranged question view
+    func setupStackViewForTwoLabels() -> UIStackView {
+        let stackForTwoLabels = UIStackView(arrangedSubviews: setupRangedLabels())
+        stackForTwoLabels.axis = .horizontal
+        stackForTwoLabels.alignment = .center
+        stackForTwoLabels.spacing = 10
+        stackForTwoLabels.distribution = .fillEqually
+        stackForTwoLabels.translatesAutoresizingMaskIntoConstraints = false
+        return stackForTwoLabels
+    }
+    
+    // create a button
+    func setupButtonToResult() -> UIButton {
+        let rangedAnswerBtn = UIButton()
+        rangedAnswerBtn.setTitle("Submit Answer", for: .normal)
+        rangedAnswerBtn.translatesAutoresizingMaskIntoConstraints = false
+//        rangedAnswerBtn.titleLabel?.font = UIFont(name: "font", size: 20)
+        rangedAnswerBtn.setTitleColor(.blue, for: .normal)
+        rangedAnswerBtn.layer.borderColor = UIColor.red.cgColor
+        rangedAnswerBtn.layer.borderWidth = 1
+        rangedAnswerBtn.layer.cornerRadius = 3
+        rangedAnswerBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        rangedAnswerBtn.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        rangedAnswerBtn.addTarget(self, action: #selector(pressRangedAnswerButton(_:)), for: .touchUpInside)
+        return rangedAnswerBtn
+    }
+    
+    // click on submit answer button on ranged answer
+    @objc func pressRangedAnswerButton(_ sender: UIButton) {
+        nextQuestion()
+    }
     
     // create a stackview for ranged question view's labels
-    func rangedStackView() {
-        let rangedStack = UIStackView(arrangedSubviews: [setupSlider()])
+    func setupRangedStackView() {
+        view.addSubview(UIView3)
+        UIView3.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        UIView3.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        UIView3.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        UIView3.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        
+        let rangedStack = UIStackView(arrangedSubviews: [setupSlider(), setupStackViewForTwoLabels(), setupButtonToResult()])
         rangedStack.alignment = .center
         rangedStack.axis = .vertical
         rangedStack.spacing = 10
         rangedStack.distribution = .fillEqually
-        view.addSubview(rangedStack)
+        UIView3.addSubview(rangedStack)
         rangedStack.translatesAutoresizingMaskIntoConstraints = false
         rangedStack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         rangedStack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
@@ -252,7 +324,8 @@ class QuestionViewController: UIViewController {
             UIView1.isHidden = true
             setupMainStackViewOnMultipleView()
         case .ranged:
-            setupSingleViewStack()
+            UIView2.isHidden = true
+            setupRangedStackView()
         }
     }
     
