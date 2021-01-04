@@ -38,6 +38,14 @@ class QuestionViewController: UIViewController {
     var questionIndex = 0
     var answerChosen = [Answer]()
     
+    // create question labels per a question view
+    let questionLabels: UILabel = {
+        let question = UILabel()
+        question.translatesAutoresizingMaskIntoConstraints = false
+        question.font = UIFont(name: "Georgia", size: 20)
+        return question
+    }()
+    
     // create empty UIView for single answer
     let UIView1: UIView = {
         let view1 = UIView()
@@ -68,6 +76,14 @@ class QuestionViewController: UIViewController {
         updateUI()
     }
     
+    // create question label on the top of each view
+    func createQuestionLabel() -> UILabel {
+        view.addSubview(questionLabels)
+        questionLabels.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
+        questionLabels.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        return questionLabels
+    }
+    
     // create 4 buttons for single question view
     // setting tag number is referred to https://stackoverflow.com/questions/24814646/attach-parameter-to-button-addtarget-action-in-swift
     func setupSingleButtons() -> [UIButton] {
@@ -92,6 +108,7 @@ class QuestionViewController: UIViewController {
         return buttons
     }
     
+    // implement something when single answer button is clicked
     @objc func pressSingleButtons(_ sender: UIButton) {
         let currentAnswers = questions[questionIndex].answers
         
@@ -117,6 +134,8 @@ class QuestionViewController: UIViewController {
         UIView1.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         UIView1.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         UIView1.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        let questionLabel = createQuestionLabel()
+        questionLabel.text = questions[0].text
         
         let stack = UIStackView(arrangedSubviews: setupSingleButtons())
         stack.alignment = .center
@@ -126,7 +145,7 @@ class QuestionViewController: UIViewController {
         UIView1.addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        stack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        stack.topAnchor.constraint(equalTo: questionLabels.bottomAnchor, constant: 50).isActive = true
     }
     
     // create 4 UILabels on multiple question view
@@ -150,6 +169,7 @@ class QuestionViewController: UIViewController {
         return multiSwitches
     }
     
+    // implement something when UISwitch is turned on
     @objc func switchOn(_ sender: UISwitch!) {
         let currentAnswers = questions[questionIndex].answers
         
@@ -182,6 +202,7 @@ class QuestionViewController: UIViewController {
         return totalStackView
     }
     
+    // create submit button on multiple answer view
     func setupMultipleAnswerButton() -> UIButton {
         let multiAnswerBtn = UIButton()
         multiAnswerBtn.setTitle("Submit Answer", for: .normal)
@@ -208,6 +229,9 @@ class QuestionViewController: UIViewController {
         UIView2.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         UIView2.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         UIView2.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        let questionLabel = createQuestionLabel()
+        questionLabel.text = questions[1].text
+        questionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         let mainStackView = UIStackView(arrangedSubviews: setupMultipleStackView())
         mainStackView.addArrangedSubview(setupMultipleAnswerButton())
@@ -218,13 +242,8 @@ class QuestionViewController: UIViewController {
         UIView2.addSubview(mainStackView)
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-    } 
-    
-    
-    
-    
-    
+        mainStackView.topAnchor.constraint(equalTo: questionLabels.bottomAnchor, constant: 50).isActive = true
+    }
     
     // create a slider on ranged question view
     func setupSlider() -> UISlider {
@@ -243,14 +262,8 @@ class QuestionViewController: UIViewController {
         let currentAnswers = questions[questionIndex].answers
         let index = Int(round(sender.value * Float(currentAnswers.count - 1)))
         answerChosen.append(currentAnswers[index])
-//        let rangedUILabel1 = setupRangedLabels()[0]
-//        let rangedUILabel2 = setupRangedLabels()[1]
-        
-//        rangedUILabel1.text =
-//        rangedUILabel2.text =
     }
 
-    
     // create a stackview for ranged question view
     func setupRangedLabels() -> [UILabel] {
         let rangedLabel1 = UILabel()
@@ -307,6 +320,9 @@ class QuestionViewController: UIViewController {
         UIView3.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         UIView3.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         UIView3.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        let questionLabel = createQuestionLabel()
+        questionLabel.text = questions[2].text
+        questionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         let rangedStack = UIStackView(arrangedSubviews: [setupSlider(), setupStackViewForTwoLabels(), setupButtonToResult()])
         rangedStack.alignment = .center
@@ -316,7 +332,7 @@ class QuestionViewController: UIViewController {
         UIView3.addSubview(rangedStack)
         rangedStack.translatesAutoresizingMaskIntoConstraints = false
         rangedStack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        rangedStack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        rangedStack.topAnchor.constraint(equalTo: questionLabels.bottomAnchor, constant: 50).isActive = true
     }
     
     func updateUI() {
