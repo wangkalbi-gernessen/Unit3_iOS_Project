@@ -145,6 +145,7 @@ class QuestionViewController: UIViewController {
         let multiSwitches = UISwitch()
         multiSwitches.tag = tagNumber
         multiSwitches.translatesAutoresizingMaskIntoConstraints = false
+        multiSwitches.setOn(true, animated: true)
         multiSwitches.addTarget(self, action: #selector(switchOn), for: UIControl.Event.valueChanged)
         return multiSwitches
     }
@@ -233,6 +234,7 @@ class QuestionViewController: UIViewController {
         slider.translatesAutoresizingMaskIntoConstraints = false
         slider.widthAnchor.constraint(equalToConstant: 200).isActive = true
         slider.tintColor = .green
+        slider.setValue(0.5, animated: false)
         slider.addTarget(self, action: #selector(changeSliderValue(_:)), for: UIControl.Event.valueChanged)
         return slider
     }
@@ -241,24 +243,27 @@ class QuestionViewController: UIViewController {
         let currentAnswers = questions[questionIndex].answers
         let index = Int(round(sender.value * Float(currentAnswers.count - 1)))
         answerChosen.append(currentAnswers[index])
-        let rangedUILabel1 = setupRangedLabels()[0]
-        let rangedUILabel2 = setupRangedLabels()[1]
+//        let rangedUILabel1 = setupRangedLabels()[0]
+//        let rangedUILabel2 = setupRangedLabels()[1]
         
-        rangedUILabel1.text = currentAnswers[index].text
-        rangedUILabel2.text = currentAnswers[index].text
+//        rangedUILabel1.text =
+//        rangedUILabel2.text =
     }
 
     
     // create a stackview for ranged question view
     func setupRangedLabels() -> [UILabel] {
-        var rangedLabels:[UILabel] = [UILabel]()
-        for _ in 0..<2 {
-            let rangedLabel = UILabel()
-            rangedLabel.translatesAutoresizingMaskIntoConstraints = false
-            rangedLabel.font = UIFont.systemFont(ofSize: 20)
-            rangedLabel.text = "gogo"
-            rangedLabels.append(rangedLabel)
-        }
+        let rangedLabel1 = UILabel()
+        rangedLabel1.translatesAutoresizingMaskIntoConstraints = false
+        rangedLabel1.font = UIFont.systemFont(ofSize: 20)
+        rangedLabel1.text = questions[questionIndex].answers.first?.text
+        
+        let rangedLabel2 = UILabel()
+        rangedLabel2.translatesAutoresizingMaskIntoConstraints = false
+        rangedLabel2.font = UIFont.systemFont(ofSize: 20)
+        rangedLabel2.text = questions[questionIndex].answers.last?.text
+        
+        let rangedLabels:[UILabel] = [rangedLabel1,rangedLabel2]
         return rangedLabels
     }
     
@@ -278,9 +283,10 @@ class QuestionViewController: UIViewController {
         let rangedAnswerBtn = UIButton()
         rangedAnswerBtn.setTitle("Submit Answer", for: .normal)
         rangedAnswerBtn.translatesAutoresizingMaskIntoConstraints = false
-//        rangedAnswerBtn.titleLabel?.font = UIFont(name: "font", size: 20)
-        rangedAnswerBtn.setTitleColor(.blue, for: .normal)
+        rangedAnswerBtn.titleLabel?.font = UIFont(name: "Georgia", size: 20)
+        rangedAnswerBtn.setTitleColor(.white, for: .normal)
         rangedAnswerBtn.layer.borderColor = UIColor.red.cgColor
+        rangedAnswerBtn.backgroundColor = .gray
         rangedAnswerBtn.layer.borderWidth = 1
         rangedAnswerBtn.layer.cornerRadius = 3
         rangedAnswerBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -294,7 +300,7 @@ class QuestionViewController: UIViewController {
         nextQuestion()
     }
     
-    // create a stackview for ranged question view's labels
+    // create a stackview for all objects on ranged question view
     func setupRangedStackView() {
         view.addSubview(UIView3)
         UIView3.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true

@@ -22,6 +22,8 @@ class ResultViewController: UIViewController {
         resultDefinition.backgroundColor = .white
         resultDefinition.font = UIFont(name: "Georgia", size: 20)
         resultDefinition.translatesAutoresizingMaskIntoConstraints = false
+        resultDefinition.numberOfLines = 0
+        resultDefinition.lineBreakMode = .byWordWrapping
         return resultDefinition
     }()
     
@@ -62,6 +64,8 @@ class ResultViewController: UIViewController {
         view.addSubview(stackview)
         stackview.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         stackview.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        stackview.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        stackview.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true 
     }
     
     @objc func returnToIntroduction(_ sender: UIButton) {
